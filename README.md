@@ -24,3 +24,4 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 "# koinuma-ryouga2" 
 "# koinuma-ryoga-kadai" 
+"# koinuma-ryoga-kadai" 
