@@ -1,151 +1,67 @@
 <template>
   <v-container>
     <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
-
       <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
+        <h1 class="display font-weight-bold">
+          商品一覧
         </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
       </v-col>
     </v-row>
-  </v-container>
+   
+<v-row>
+ <v-col
+ v-for="item in products"
+ :key="item.id"
+ cols="12"
+ sm="6"
+ md="4"
+ >
+ 
+   <v-card>
+    <v-img src="https://via.placeholder.com/300x200" height="100px"></v-img>
+    <v-card-title>{{ item.name }}</v-card-title>
+    <v-card-subtitle>{{ item.price }}</v-card-subtitle>
+    <v-card-actions>
+      <v-btn color="primary" @click="showDetails(item.id)">商品詳細</v-btn>
+      <v-btn color="primary" @click="purchase(item.id)">購入する</v-btn>
+    </v-card-actions>
+   </v-card>
+ </v-col>
+</v-row>
+ 
+ </v-container>
 </template>
-
+ 
 <script>
-  export default {
-    name: 'HelloWorld',
-
-    data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+export default {
+  data() {
+    return {
+      products: [], // 表示用の配列
+      showDialog: false,
+      selectedProduct: null
+    };
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await fetch('https://m3h-koinuma-0606.azurewebsites.net/api/SELECT?');
+        const text = await response.text(); // Spring BootはStringを返しているのでまずはtextで受け取る
+        const json = JSON.parse(text); // 文字列をJSONに変換
+        this.products = json.List; // "List"キーの中身を取り出す
+      } catch (error) {
+        console.error('データ取得エラー:', error);
+      }
+    },
+    showDetails(id) {
+      this.selectedProduct = this.products.find(p => p.id === id);
+      this.showDialog = true;
+    },
+    purchase(id) {
+      alert(`商品ID ${id} を購入します`);
+    }
   }
+};
 </script>
